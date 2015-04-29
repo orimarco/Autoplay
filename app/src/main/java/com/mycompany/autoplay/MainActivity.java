@@ -1,16 +1,29 @@
 package com.mycompany.autoplay;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,15 +53,14 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        songsIds = getSongsIdsList();
+//        songsIds = getSongsIdsList();
         index = 0;
 //        mediaPlayer = MediaPlayer.create(this, songsIds.get(index));
 //        File f = Environment.getExternalStorageDirectory();
 //        ArrayList<String> names = new ArrayList<String>(Arrays.asList(f.list()));
 //        Toast.makeText(this, names.toString(), Toast.LENGTH_LONG).show();
 //        mediaPlayer = MediaPlayer.create(this,Uri.parse("http://dimechimes.com/media/Rocky_Soundtrack_-_Eye_Of_The_Tiger.mp3"));
-        mediaPlayer = MediaPlayer.create(this,Uri.parse("https://00e9e64baca8d25690aa28b9851dabde62cfe8d38bc2438414-apidata.googleusercontent.com/download/storage/v1_internal/b/autoplay_audio/o/youshouldbedancing.mp3?qk=AD5uMEvGlI9V0cN3RMG_fGWEp6pGUJsSVfES4BGr8xRddLyKD8duudxXyocuzEskbP3mlh8fk4lMZtQKQpDE9hVgCeLTFRLPyWr_xMc8km53xttSqdGkXTUSnXGDzZu5-7GJ9w1mzvMtJHBg4r-4XGjExZOMYZNKTlcQ2DFkbQx0KsPVumJX8Rto9hQ7giD1BprTWIX8ZgYcZNrxo8iDNPCwI7Gp43VOVCMcc4ASPO-_SakvdkXa7ue650YbiRv-5IFiGvCZQttt8YCuJsZXtaoyIQ81pCA48n5SenNXgyOawT_a2zGuvuZPCA17YVzSSUjL3pcJvlH2YxB7z0VmZlUguJ9PRD8ayl_5EoAuEWqnhWG4TDcr2cV_z41DjFaQRCLZD-kz-FNQtCHYtM6dfyJRhgv4u_yM8heL34dfOY-8Y2arjQmuV4GDLHV9cGcp5SzDIklzFAqtbSq43q8kP1XbUobFztIjYYIUTEpbFwMwGXvdTHAx7bg5o8fgqGODCGMFF-RMPB-2Z71PRmCaGyEUfRVaMKVx70UeoSikKQBp6InvzkFx4oHXFphvvA27XSnuqK7oEjwi6ZZBpR3QEBgyK7rsvVlK_DECn8C0Wy-5tNfYYYrsdnQBkkcFpqr9r_V9gaBMGbZk8hxdLEvl_YYcM0sz6URm3SV7-rf-IuTsv6YtCP8OGVc6uLa0aNns_iccZkX4UZ6_gDeXDepxBdvXWvUTS8jGgw"));
-        mediaPlayer.start();
+        mediaPlayer = MediaPlayer.create(this,Uri.parse("https://00e9e64bac29d4aaf6ceea8798876fe4889f1f7c783eea7404-apidata.googleusercontent.com/download/storage/v1_internal/b/autoplay_audio/o/02-Move%20It.mp3?qk=AD5uMEscWeeOP-iRR4tfcTkrBltzjjHmcTCHrDGpYQyymTZd6QKFMzAiZ38S44yoPLVvGE-Oq_RouDT1EguQbIv_fABtrUZVTReNwq96a-6vS1feRV_9Rxim9eYkGv-DR4Z3QTf9clalRM0fYB5M61YZ2HWGgS-KFS1CNq4lNq5-fhDch7iKTK2jeTEbzfSSZfLNtffXP29z2oUDHum5jX5RQx9oQns4zH_ss6RRh8ZEakTS0ethvpFFVr9JsnfuxiY6Hnt83T_4SJW6N7wO9D2fsPCh6VRVPBv3hF8j1h2cTipMzsKIVBeVdH5Psxo9Twlm8JiAw3-RpjlOwq66FeeArM2DL5w1GKeA1S51ecTQ69Tlfnsrd2Boril6QZHDbdHFuoKRFSDbbWNfiBEmGZe0mtRuG21fkpTgHgpQaUZvwLWrZNGe7T6Xw_PmgV_l6YcP4PFNyQR96X8WFYukuWRvqTtMbAWTOk9CPg_fnpHz0ZByXDppKYRJSV75_2ft85qwWD1sT-ZPbgz9D0ysIlzRaaOg-EIiPq9KmLVZMnGzIMK9CaNLBaSdU7XjGqj9DxKlq4VJWj6NtLplfkqzdNtQ44P-cVupqR-lC8cuHV30FYRoK3vvzyd7H3we1T16_CTK1YEQ5-FiddQ3giMNodYvaYZFlm4UVV3-8xYzDmSl-uj2hq8Irlesja6KE7BvFU7xcSOZGe_e8fLzf3dUVrD5M6ZJYzj-pQ"));
 //        mediaPlayer = MediaPlayer.create(this, Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/Music/Flares.mp3"));
 //        srh = new SpeechRecognitionHelper();
 //        readPools();
@@ -63,9 +75,8 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        return true;
-    }
+    return true;
+}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -115,18 +126,18 @@ public class MainActivity extends ActionBarActivity {
         mediaPlayer.start(); // no need to call prepare(); create() does that for you
     }
 
-    private List<Integer> getSongsIdsList(){
-        Field[] fields=R.raw.class.getFields();
-        List<Integer> ids= new ArrayList<>();
-        for (Field field : fields) {
-            try {
-                ids.add(field.getInt(field));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        return ids;
-    }
+//    private List<Integer> getSongsIdsList(){
+//        Field[] fields=R.raw.class.getFields();
+//        List<Integer> ids= new ArrayList<>();
+//        for (Field field : fields) {
+//            try {
+//                ids.add(field.getInt(field));
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return ids;
+//    }
 
     // Activity Results handler
     @Override
@@ -225,10 +236,45 @@ public class MainActivity extends ActionBarActivity {
         return words;
     }
 
-
-
-    void masterpiece(){
-
+    public void onclick(View v){
+        new ServletPostAsyncTask().execute(new Pair<Context, String>(this, "1 2 3 4 5"));
     }
 
+}
+
+
+class ServletPostAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+    private Context context;
+
+    @Override
+    protected String doInBackground(Pair<Context, String>... params) {
+        context = params[0].first;
+        String name = params[0].second;
+
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost("http://perudo-909.appspot.com/hello");
+        try {
+            // Add name data to request
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("name", name));
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpClient.execute(httpPost);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                return EntityUtils.toString(response.getEntity());
+            }
+            return "Error: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase();
+
+        } catch (ClientProtocolException e) {
+            return e.getMessage();
+        } catch (IOException e) {
+            return e.getMessage();
+        }
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+    }
 }
