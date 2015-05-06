@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -60,11 +60,13 @@ public class MainActivity extends ActionBarActivity {
 //        ArrayList<String> names = new ArrayList<String>(Arrays.asList(f.list()));
 //        Toast.makeText(this, names.toString(), Toast.LENGTH_LONG).show();
 //        mediaPlayer = MediaPlayer.create(this,Uri.parse("http://dimechimes.com/media/Rocky_Soundtrack_-_Eye_Of_The_Tiger.mp3"));
-        mediaPlayer = MediaPlayer.create(this,Uri.parse("https://00e9e64bac29d4aaf6ceea8798876fe4889f1f7c783eea7404-apidata.googleusercontent.com/download/storage/v1_internal/b/autoplay_audio/o/02-Move%20It.mp3?qk=AD5uMEscWeeOP-iRR4tfcTkrBltzjjHmcTCHrDGpYQyymTZd6QKFMzAiZ38S44yoPLVvGE-Oq_RouDT1EguQbIv_fABtrUZVTReNwq96a-6vS1feRV_9Rxim9eYkGv-DR4Z3QTf9clalRM0fYB5M61YZ2HWGgS-KFS1CNq4lNq5-fhDch7iKTK2jeTEbzfSSZfLNtffXP29z2oUDHum5jX5RQx9oQns4zH_ss6RRh8ZEakTS0ethvpFFVr9JsnfuxiY6Hnt83T_4SJW6N7wO9D2fsPCh6VRVPBv3hF8j1h2cTipMzsKIVBeVdH5Psxo9Twlm8JiAw3-RpjlOwq66FeeArM2DL5w1GKeA1S51ecTQ69Tlfnsrd2Boril6QZHDbdHFuoKRFSDbbWNfiBEmGZe0mtRuG21fkpTgHgpQaUZvwLWrZNGe7T6Xw_PmgV_l6YcP4PFNyQR96X8WFYukuWRvqTtMbAWTOk9CPg_fnpHz0ZByXDppKYRJSV75_2ft85qwWD1sT-ZPbgz9D0ysIlzRaaOg-EIiPq9KmLVZMnGzIMK9CaNLBaSdU7XjGqj9DxKlq4VJWj6NtLplfkqzdNtQ44P-cVupqR-lC8cuHV30FYRoK3vvzyd7H3we1T16_CTK1YEQ5-FiddQ3giMNodYvaYZFlm4UVV3-8xYzDmSl-uj2hq8Irlesja6KE7BvFU7xcSOZGe_e8fLzf3dUVrD5M6ZJYzj-pQ"));
+//        mediaPlayer = MediaPlayer.create(this,Uri.parse("https://00e9e64bac29d4aaf6ceea8798876fe4889f1f7c783eea7404-apidata.googleusercontent.com/download/storage/v1_internal/b/autoplay_audio/o/02-Move%20It.mp3?qk=AD5uMEscWeeOP-iRR4tfcTkrBltzjjHmcTCHrDGpYQyymTZd6QKFMzAiZ38S44yoPLVvGE-Oq_RouDT1EguQbIv_fABtrUZVTReNwq96a-6vS1feRV_9Rxim9eYkGv-DR4Z3QTf9clalRM0fYB5M61YZ2HWGgS-KFS1CNq4lNq5-fhDch7iKTK2jeTEbzfSSZfLNtffXP29z2oUDHum5jX5RQx9oQns4zH_ss6RRh8ZEakTS0ethvpFFVr9JsnfuxiY6Hnt83T_4SJW6N7wO9D2fsPCh6VRVPBv3hF8j1h2cTipMzsKIVBeVdH5Psxo9Twlm8JiAw3-RpjlOwq66FeeArM2DL5w1GKeA1S51ecTQ69Tlfnsrd2Boril6QZHDbdHFuoKRFSDbbWNfiBEmGZe0mtRuG21fkpTgHgpQaUZvwLWrZNGe7T6Xw_PmgV_l6YcP4PFNyQR96X8WFYukuWRvqTtMbAWTOk9CPg_fnpHz0ZByXDppKYRJSV75_2ft85qwWD1sT-ZPbgz9D0ysIlzRaaOg-EIiPq9KmLVZMnGzIMK9CaNLBaSdU7XjGqj9DxKlq4VJWj6NtLplfkqzdNtQ44P-cVupqR-lC8cuHV30FYRoK3vvzyd7H3we1T16_CTK1YEQ5-FiddQ3giMNodYvaYZFlm4UVV3-8xYzDmSl-uj2hq8Irlesja6KE7BvFU7xcSOZGe_e8fLzf3dUVrD5M6ZJYzj-pQ"));
+//        mediaPlayer = MediaPlayer.create(this,Uri.parse("http://storage.googleapis.com/autoplay_audio/12-Why.mp3"));
 //        mediaPlayer = MediaPlayer.create(this, Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/Music/Flares.mp3"));
 //        srh = new SpeechRecognitionHelper();
 //        readPools();
 //        View v = this.getWindow().getDecorView().findViewById(android.R.id.content);
+
 //        mediaPlayer.start();
 //        play(v);
 //        pause(v);
@@ -240,41 +242,43 @@ public class MainActivity extends ActionBarActivity {
         new ServletPostAsyncTask().execute(new Pair<Context, String>(this, "1 2 3 4 5"));
     }
 
-}
+    class ServletPostAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+        private Context context;
 
+        @Override
+        protected String doInBackground(Pair<Context, String>... params) {
+            context = params[0].first;
+            String name = params[0].second;
 
-class ServletPostAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
-    private Context context;
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost("http://perudo-909.appspot.com/hello");
+            try {
+                // Add name data to request
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+                nameValuePairs.add(new BasicNameValuePair("name", name));
+                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-    @Override
-    protected String doInBackground(Pair<Context, String>... params) {
-        context = params[0].first;
-        String name = params[0].second;
+                // Execute HTTP Post Request
+                HttpResponse response = httpClient.execute(httpPost);
+                if (response.getStatusLine().getStatusCode() == 200) {
+                    return EntityUtils.toString(response.getEntity());
+                }
+                return "Error: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase();
 
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost("http://perudo-909.appspot.com/hello");
-        try {
-            // Add name data to request
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-            nameValuePairs.add(new BasicNameValuePair("name", name));
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-            // Execute HTTP Post Request
-            HttpResponse response = httpClient.execute(httpPost);
-            if (response.getStatusLine().getStatusCode() == 200) {
-                return EntityUtils.toString(response.getEntity());
+            } catch (ClientProtocolException e) {
+                return e.getMessage();
+            } catch (IOException e) {
+                return e.getMessage();
             }
-            return "Error: " + response.getStatusLine().getStatusCode() + " " + response.getStatusLine().getReasonPhrase();
 
-        } catch (ClientProtocolException e) {
-            return e.getMessage();
-        } catch (IOException e) {
-            return e.getMessage();
+
         }
-    }
 
-    @Override
-    protected void onPostExecute(String result) {
-        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+        @Override
+        protected void onPostExecute(String result) {
+            mediaPlayer = MediaPlayer.create(context, Uri.parse("http://storage.googleapis.com/autoplay_audio/12-Why.mp3"));
+            mediaPlayer.start();
+
+        }
     }
 }
